@@ -1,0 +1,28 @@
+import streamlit as st
+import pandas as pd
+import pygsheets
+import os 
+
+st.set_page_config(page_title="DB | KAIZEN", 
+                   page_icon="🌍", 
+                   layout="wide"                   
+                )
+#st.set_page_config(page_icon = './task_icon.png')
+
+credentials = pygsheets.authorize(service_file=os.getcwd() + "./cred.json")
+
+meuArquivoGsheets = "https://docs.google.com/spreadsheets/d/145ZGcXEQU_KLiy5YZII2Onb_WO0wo8yjmBKl1yvDXBE/edit?usp=sharing"
+arquivo = credentials.open_by_url(meuArquivoGsheets)
+aba = arquivo.worksheet_by_title("Acomp. - XDs")
+data = aba.get_all_values()
+df = pd.DataFrame(data)
+
+df = df.iloc[0:, 0:]
+
+with st.sidebar:
+    st.title("Siga o passo a passo:")
+    
+st.write('Gestão da Qualidade')
+st.subheader('Dash de acompanhamento de processos')
+#components.iframe(meuArquivoGsheets)
+st.write(df)

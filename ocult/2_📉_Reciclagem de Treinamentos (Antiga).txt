@@ -1,0 +1,141 @@
+import streamlit as st
+import pandas as pd
+import pygsheets
+import os 
+
+st.set_page_config(page_title="Reciclagem de Treinamentos", 
+                   page_icon="📉", 
+                   layout="wide"                   
+                )
+
+with st.sidebar:
+    st.write("Passo a Passo:")
+    st.write("Selecione uma checkbox referente aos cursos referentes ao plano Multiplica OPS")
+
+# Add CSS styles for the containers (opcional)
+st.subheader("Selecione os cursos abaixo:")
+
+credentials = pygsheets.authorize(service_file=os.path.join(os.getcwd(), "cred.json"))
+
+meuArquivoGsheets = "https://docs.google.com/spreadsheets/d/1nl-rJbtfFjfJUEQp43eo9wU14EN-qDBRaMxs03yKmlQ/edit?gid=2096097163#gid=2096097163"
+arquivo = credentials.open_by_url(meuArquivoGsheets)
+aba = arquivo.worksheet_by_title("Matriz")
+data = aba.get_all_values()
+df = pd.DataFrame(data)
+df = df.iloc[5:, 0:]  # Ajuste para pular as 4 primeiras linhas 
+
+#---------------------------------------------------------------------------------------------------------------
+
+# Container para as operações multiplica
+with st.container(border = True):
+    st.title("Multiplica OPS:")
+
+    # Definindo as colunas para os bimestres
+    trimestre1, trimestre2 = st.columns(2)
+
+    with trimestre1:
+        st.subheader("FEVEREIRO")
+        option1 = st.checkbox(label="19/02/2024 - Introdução ao Programa: 5s no setor em todas operações Loggi")
+        option2 = st.checkbox(label="26/02/2024 - Inclusão de pacotes na esteira em XDs Automatizados")
+
+        st.subheader("MARÇO")
+        option3 = st.checkbox(label="04/03/2024 - Devolução de Insumos em todas as operações Loggi")
+        option4 = st.checkbox(label="11/03/2024 - Boas práticas de Manuseio em todas operações Loggi")
+        option5 = st.checkbox(label="25/03/2024 - Como movimentar pacotes e sacas de forma correta, em todas operações Loggi")
+        
+        st.subheader("ABRIL")
+        option6 = st.checkbox(label="01/04/2024 - Validação de Entregadores em Agências e HUB's")
+        option7 = st.checkbox(label="08/04/2024 - Conferência de pacotes em Postos Avançados")
+        option8 = st.checkbox(label="15/04/2024 - Recebimento em todos os XDs - Parte I")
+        option9 = st.checkbox(label="22/04/2024 - Loggi Fácil")
+        option10 = st.checkbox(label="29/04/2024 - Triagem - Reversa XD Regional")
+    
+    with trimestre2:
+        st.subheader("MAIO")
+        option11 = st.checkbox(label="06/05/2024 - Recebimento em todas Agências e HUBs - Parte I")
+        option12 = st.checkbox(label="13/05/2024 - Inclusão de pacotes em sacas")
+        option13 = st.checkbox(label="20/05/2024 - Amarração de pallets e gaylords com stretch")
+        option14 = st.checkbox(label="27/05/2024 - Amarração de carga no veículo 2.0")   
+        
+        st.subheader("JUNHO")
+        option15 = st.checkbox(label="03/06/2024 - Recuperação de pacotes")
+        option16 = st.checkbox(label="10/06/2024 - Processamento em Gaiolas Roll Containers")
+
+    # Lista para armazenar as chaves selecionadas no container multiplica
+    selected_keys_multiplica = []
+
+    if option1:
+        selected_keys_multiplica.append(15)
+    if option2:
+        selected_keys_multiplica.append(17)
+    if option3:
+        selected_keys_multiplica.append(19)
+    if option4:
+        selected_keys_multiplica.append(21)
+    if option5:
+        selected_keys_multiplica.append(23)
+    if option6:
+        selected_keys_multiplica.append(25)
+    if option7:
+        selected_keys_multiplica.append(27)
+    if option8:
+        selected_keys_multiplica.append(29)
+    if option9:
+        selected_keys_multiplica.append(31)
+    if option10:
+        selected_keys_multiplica.append(33)
+    if option11:
+        selected_keys_multiplica.append(35)
+    if option12:
+        selected_keys_multiplica.append(37)
+    if option13:
+        selected_keys_multiplica.append(39)
+    if option14:
+        selected_keys_multiplica.append(41)
+    if option15:
+        selected_keys_multiplica.append(43)
+    if option16:
+        selected_keys_multiplica.append(45)
+
+#----------------------------------------------------------------------------------------------------------
+month_option = st.selectbox(
+    "Defina o mês dos cursos para reciclagem:",
+    ("FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO"))
+
+catch_grip = st.button("Gerar Planilha")
+if catch_grip:
+    dados_filtrados = []
+
+    for i in range(len(df)):
+        dados_por_linha = [df.iloc[i, 0], df.iloc[i, 5], df.iloc[i, 176], df.iloc[i, 7]]
+        aderencia_encontrada = False
+        for j in range(len(selected_keys_multiplica)):
+            reciclagem_treinamentos = df.iloc[i, selected_keys_multiplica[j]]
+            if reciclagem_treinamentos != "" and reciclagem_treinamentos != "#N/A":
+                # Remover símbolo de porcentagem, se existir, e converter para float
+                try:
+                    valor = float(reciclagem_treinamentos.strip('%')) / 100 if '%' in reciclagem_treinamentos else float(reciclagem_treinamentos)
+                    if valor < 0.8:
+                        dados_por_linha.append(f"{valor * 100:.1f}%")
+                        aderencia_encontrada = True  
+                    else:
+                        dados_por_linha.append("")
+                except ValueError:
+                    dados_por_linha.append("")  # Adicionar vazio se a conversão falhar
+            else:
+                dados_por_linha.append("")
+        if aderencia_encontrada:
+            dados_filtrados.append(dados_por_linha)
+
+    # Combinar os resultados dos dois DataFrames em um único DataFrame
+    #combined_results = pd.DataFrame({
+    #    "Nome completo": list(set(list(uns_contados.keys()) + list(lider_uns_contados.keys()))),
+    #    "Nome do Gestor": [total_multiplica.get(base, 0) for base in list(set(list(uns_contados.keys()) + list(lider_uns_contados.keys())))],
+    #   "Email do gestor": [total_lider.get(base, 0) for base in list(set(list(uns_contados.keys()) + list(lider_uns_contados.keys())))],
+    #    "Local de Trabalho": [uns_contados.get(base, 0) for base in list(set(list(uns_contados.keys()) + list(lider_uns_contados.keys())))],
+    #})
+
+    st.dataframe(dados_filtrados)
+
+    
+
