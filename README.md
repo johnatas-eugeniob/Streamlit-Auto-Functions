@@ -1,8 +1,8 @@
-### **Objetivo**:
+### **🎯 Objetivo**:
 
 Este projeto tem como objetivo automatizar tarefas no gerenciamento de colaboradores, especialmente no que diz respeito à organização dos mesmos por local de trabalho, captura de presença em cursos oferecidos pela empresa e cálculo da aderência de cada colaborador aos programas da organização. Além disso, o sistema oferece uma visualização consolidada das bases de trabalho, fornecendo insights sobre a presença e aderência de cada grupo de colaboradores.
 
-### **Funcionalidades Principais:**
+### **🛠 Funcionalidades Principais:**
 
 **1. Separação dos Colaboradores por Local de Trabalho:**
 
@@ -33,7 +33,7 @@ Este projeto tem como objetivo automatizar tarefas no gerenciamento de colaborad
 
    
 
-### **Fluxo de Dados:**
+### **📲 Fluxo de Dados:**
 
 * O sistema importa os dados dos colaboradores a partir de uma planilha de entrada.  
 * A separação dos colaboradores por local de trabalho ocorre automaticamente.  
@@ -41,7 +41,7 @@ Este projeto tem como objetivo automatizar tarefas no gerenciamento de colaborad
 * A aderência de cada colaborador é calculada com base em suas atividades e presença nos cursos.  
 * Finalmente, os colaboradores são agrupados em bases e as métricas de presença e aderência são calculadas e exibidas em uma interface de visualização.
 
-### **Benefícios:**
+### **📈 Benefícios:**
 
 * Automatização e Eficiência: Reduz o tempo gasto na organização manual e no cálculo de dados relacionados aos colaboradores.  
 * Acompanhamento em Tempo Real: Facilita o monitoramento contínuo da presença e aderência dos colaboradores nos cursos da organização.  
