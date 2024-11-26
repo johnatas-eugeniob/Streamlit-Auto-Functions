@@ -1,0 +1,8 @@
+services:
+  streamlit:
+    container_name: "Function Menu"
+    build:
+      dockerfile: ./dockerfile
+      context: ./
+    ports:
+      - '8501:8501'
